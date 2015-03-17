@@ -1,11 +1,10 @@
-EXE = main
-$(EXE): priority heapsort
-	g++ -o $(EXE) heapsort.o priority_queue.o -std=c++11
+EXE   = main
+FLAGS = -std=c++11 -fpermissive
+$(EXE): heapsort
+	g++ -o $(EXE) heapsort.o priority_queue.o $(FLAGS)
 	make tidy
-priority:priority_queue.cpp priority_queue.h
-	g++ -c priority_queue.cpp -o priority_queue.o -std=c++11
 heapsort:heapsort.cpp priority_queue.h
-	g++ -c heapsort.cpp -o heapsort.o -std=c++11
+	g++ -c heapsort.cpp -o heapsort.o $(FLAGS)
 
 
 .PHONY: tidy
