@@ -1,9 +1,9 @@
 EXE   = main
-FLAGS = -std=c++11 -fpermissive -O2
-$(EXE): heapsort
+FLAGS = -std=c++11 -fpermissive -O3
+$(EXE): heapsort.o
 	g++ -o $(EXE) heapsort.o $(FLAGS)
 	make tidy
-heapsort:heapsort.cpp priority_queue.h
+heapsort.o:heapsort.cpp priority_queue.h
 	g++ -c heapsort.cpp -o heapsort.o $(FLAGS)
 
 

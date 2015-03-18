@@ -18,6 +18,7 @@ bool sorted(const vector<int>& vec);
 void newVecQSort(vector<int>& vec);
 void mergeSort(vector<int>& vec);
 void insertSort(vector<int>&vec);
+void bucketSort(vector<int>& vec);
 int main()
 {
 
@@ -79,6 +80,18 @@ int main()
     std::cout<<"--------------------------"<<std::endl;
 
 
+    randomVector(originVec);
+    displayVec(originVec);
+    t1 = high_resolution_clock::now();
+    bucketSort(originVec);
+    t2 = high_resolution_clock::now();
+    time_span = duration_cast<duration<double>>(t2-t1);
+    displayVec(originVec);
+    if(sorted(originVec)) 
+        std::cout<<"sorted"<<std::endl;
+    std::cout<<"random vector, bucketSort time consumed:"<<time_span.count()<<" seconds"<<std::endl;
+    std::cout<<"--------------------------"<<std::endl;
+
     /* randomVector(originVec); */
     /* displayVec(originVec); */
     /* t1 = high_resolution_clock::now(); */
@@ -107,7 +120,7 @@ void randomVector(vector<int>& vec)
 {
     auto size = vec.size();
     for(auto it = vec.begin(); it != vec.end(); it++)
-        *it = rand();
+        *it = rand()%size;
 }
 void displayVec(vector<int>& vec)
 {
@@ -253,6 +266,43 @@ void insertSort(vector<int>&vec)
                 vec[j+1] = vec[j];
                 vec[j] = val;
             }
+        }
+    }
+}
+void bucketSort(vector<int>& vec)
+{
+    if(vec.empty()) return;
+    int max = vec[0];
+    for(auto v : vec) // fetch max value O(n)
+        if(v > max) max = v;
+    int bucketSize = 1;
+    int bucketNum  = (max / bucketSize) + 1;
+    auto buckets   = vector<vector<int>>(bucketNum,vector<int>());
+    /* for(auto v : vec) */
+    /*     std::cout<<v<<'\t'; */
+    /* std::cout<<std::endl; */
+    /* std::cout<<"bucketNum = "<<bucketNum<<std::endl; */
+
+    for(auto v : vec)
+    {
+        int idx = v / bucketSize;
+        buckets[idx].push_back(v); // maybe we can do insertion here
+    }
+    /* int avgBucketLen = 0; */
+    /* for(auto& vvec : buckets) */
+    /* { */
+    /*     avgBucketLen += vvec.size(); */
+    /*     mergeSort(vvec); */
+    /* } */
+    /* avgBucketLen /= bucketNum; */
+    /* std::cout<<"average bucket length:"<<avgBucketLen<<std::endl; */
+    /* std::cout<<"bucketNum"<<bucketNum<<std::endl; */
+    int i = 0;
+    for(int idx = bucketNum-1; idx >= 0; idx--)
+    {
+        for(auto v : buckets[idx])
+        {
+            vec[i++] = v;
         }
     }
 }
