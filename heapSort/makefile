@@ -1,5 +1,5 @@
 EXE   = main
-FLAGS = -std=c++11 -fpermissive
+FLAGS = -std=c++11 -fpermissive -O2
 $(EXE): heapsort
 	g++ -o $(EXE) heapsort.o $(FLAGS)
 	make tidy
