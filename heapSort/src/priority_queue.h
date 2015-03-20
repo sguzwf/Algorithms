@@ -150,8 +150,6 @@ template<typename Real>
 void Priority_Queue<Real>::heapSort(vector<Real >& vec)
 {
     int size = vec.size();
-    int len  = 0;
-    
     // construct heap 
     Real tmp = 0;
     for(int i = 0; i < size; i++)
