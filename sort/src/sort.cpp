@@ -1,8 +1,8 @@
 #include<iostream>
 #include<vector>
-#include<cstdlib>
 #include<time.h>
 #include<chrono>
+#include<random>
 #include"./priority_queue.h"
 #include"./sort_algorithm.h"
 using std::vector;
@@ -10,6 +10,8 @@ using namespace std::chrono;
 
 /* #define DISPLAY 1 */
 
+std::default_random_engine generator(unsigned(time(NULL)));
+std::uniform_int_distribution<int> distribution(1,20000000);
 void randomVector(vector<int>& vec);
 void displayVec(vector<int>& vec);
 void ascendingVector(vector<int>& vec);
@@ -18,12 +20,12 @@ int main()
 {
 
 
-    srand((unsigned)time(NULL));
 
     int num = 1000000;
     std::cout<<"Input num"<<std::endl;
     std::cin >> num;
     std::cout<<"num = "<<num<<std::endl;
+    std::cout<<"INT MAX = "<<INT_MAX<<std::endl;
     
     vector<int> originVec(num,0);
     randomVector(originVec);
@@ -139,9 +141,9 @@ void descendingVector(vector<int>& vec)
 }
 void randomVector(vector<int>& vec)
 {
-    auto size = vec.size();
+    int size = vec.size();
     for(auto it = vec.begin(); it != vec.end(); it++)
-        *it = rand()%size;
+        *it = distribution(generator)%size;
 }
 void displayVec(vector<int>& vec)
 {

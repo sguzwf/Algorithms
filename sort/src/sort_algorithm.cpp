@@ -1,3 +1,4 @@
+#include<iostream>
 #include<vector>
 #include<cassert>
 #include"./sort_algorithm.h"
@@ -177,11 +178,11 @@ void insertSort(vector<int>&vec)
 }
 void bucketSort(vector<int>& vec)
 {
-    if(vec.empty()) return;
+    if(vec.size() < 2) return;
     int max = vec[0];
     for(auto v : vec) // fetch max value O(n)
         if(v > max) max = v;
-    int bucketSize = 1;
+    int bucketSize = 10000;
     int bucketNum  = (max / bucketSize) + 1;
     auto buckets   = vector<vector<int>>(bucketNum,vector<int>());
     /* for(auto v : vec) */
@@ -194,15 +195,11 @@ void bucketSort(vector<int>& vec)
         int idx = v / bucketSize;
         buckets[idx].push_back(v); // maybe we can do insertion here
     }
-    /* int avgBucketLen = 0; */
-    /* for(auto& vvec : buckets) */
-    /* { */
-    /*     avgBucketLen += vvec.size(); */
-    /*     mergeSort(vvec); */
-    /* } */
-    /* avgBucketLen /= bucketNum; */
-    /* std::cout<<"average bucket length:"<<avgBucketLen<<std::endl; */
-    /* std::cout<<"bucketNum"<<bucketNum<<std::endl; */
+    for(auto& vvec : buckets)
+    {
+        /* std::cout<<vvec.size()<<std::endl; */
+        mergeSort(vvec);
+    }
     int i = 0;
     for(int idx = bucketNum-1; idx >= 0; idx--)
     {
