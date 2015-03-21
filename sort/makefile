@@ -15,10 +15,10 @@ OBJ    = $(patsubst %,$(OBJDIR)/%,$(OBJ_))
 ###################################################
 
 
-$(EXE):$(OBJ) $(SRC) $(DEPS)
-	$(CXX) -o $(EXE) $(OBJ) $(FLAGS)
 $(OBJDIR)/%.o:$(SRCDIR)/%.cpp  $(DEPS)
 	$(CXX) -c $< -o $@ $(FLAGS)
+main.exe:$(OBJ) $(SRC) $(DEPS)
+	$(CXX) -o $(EXE) $(OBJ) $(FLAGS)
 .PHONY:clean
 
 clean:

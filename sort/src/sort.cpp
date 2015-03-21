@@ -126,6 +126,21 @@ int main()
     std::cout<<"random vector, bucketSort time consumed:"<<time_span.count()<<" seconds"<<std::endl;
     std::cout<<"--------------------------"<<std::endl;
 
+    randomVector(originVec);
+    #ifdef DISPLAY 
+    displayVec(originVec);
+    #endif
+    t1 = high_resolution_clock::now();
+    countSort(originVec);
+    t2 = high_resolution_clock::now();
+    time_span = duration_cast<duration<double>>(t2-t1);
+    #ifdef DISPLAY 
+    displayVec(originVec);
+    #endif
+    if(sorted(originVec)) 
+        std::cout<<"sorted"<<std::endl;
+    std::cout<<"random vector, countSort time consumed:"<<time_span.count()<<" seconds"<<std::endl;
+    std::cout<<"--------------------------"<<std::endl;
     return 0;
 }
 void ascendingVector(vector<int>& vec)

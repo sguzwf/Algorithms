@@ -92,6 +92,8 @@ void newVecQSort(vector<int>& vec)
     vector<int> vec1    = vector<int>();
     vector<int> vec2    = vector<int>();
     vector<int> vec3    = vector<int>();
+    vec1.reserve(vec.size()/2);
+    vec3.reserve(vec.size()/2);
     for(auto v : vec)
     {
         if(v > pivot)       vec1.push_back(v);
@@ -176,20 +178,65 @@ void insertSort(vector<int>&vec)
         }
     }
 }
+void countSort(vector<int>& vec)
+{
+    if(vec.size() < 2) return;
+    int max = vec[0];
+    int min = vec[0];
+    assert(max >= 0);
+    assert(min >= 0);
+    for(auto v : vec) // fetch max value O(n)
+    {
+        if(v > max) max = v;
+        if(v < min) min = v;
+    }
+    auto aux = vector<int>(max-min+1,0);
+    for(auto v : vec)
+        aux[v-min]++;
+    int idx = 0;
+    for(int i = aux.size()-1; i >= 0; i--)
+    {
+        for(int j = 0; j < aux[i]; j++)
+            vec[idx++] = i+min;
+    }
+    /* int bucketSize = 10000; */
+    /* int bucketNum  = (max / bucketSize) + 1; */
+    /* auto buckets   = vector<vector<int>>(bucketNum,vector<int>()); */
+    /* /1* for(auto v : vec) *1/ */
+    /* /1*     std::cout<<v<<'\t'; *1/ */
+    /* /1* std::cout<<std::endl; *1/ */
+    /* /1* std::cout<<"bucketNum = "<<bucketNum<<std::endl; *1/ */
+
+    /* for(auto v : vec) */
+    /* { */
+    /*     int idx = v / bucketSize; */
+    /*     buckets[idx].push_back(v); // maybe we can do insertion here */
+    /* } */
+    /* for(auto& vvec : buckets) */
+    /* { */
+    /*     /1* std::cout<<vvec.size()<<std::endl; *1/ */
+    /*     mergeSort(vvec); */
+    /* } */
+    /* int i = 0; */
+    /* for(int idx = bucketNum-1; idx >= 0; idx--) */
+    /* { */
+    /*     for(auto v : buckets[idx]) */
+    /*     { */
+    /*         vec[i++] = v; */
+    /*     } */
+    /* } */
+}
 void bucketSort(vector<int>& vec)
 {
     if(vec.size() < 2) return;
     int max = vec[0];
     for(auto v : vec) // fetch max value O(n)
         if(v > max) max = v;
-    int bucketSize = 10000;
+    int bucketSize = 50000;
     int bucketNum  = (max / bucketSize) + 1;
     auto buckets   = vector<vector<int>>(bucketNum,vector<int>());
-    /* for(auto v : vec) */
-    /*     std::cout<<v<<'\t'; */
-    /* std::cout<<std::endl; */
-    /* std::cout<<"bucketNum = "<<bucketNum<<std::endl; */
-
+    for(auto b : buckets)
+        b.reserve(bucketSize);
     for(auto v : vec)
     {
         int idx = v / bucketSize;
@@ -197,8 +244,7 @@ void bucketSort(vector<int>& vec)
     }
     for(auto& vvec : buckets)
     {
-        /* std::cout<<vvec.size()<<std::endl; */
-        mergeSort(vvec);
+        countSort(vvec);
     }
     int i = 0;
     for(int idx = bucketNum-1; idx >= 0; idx--)

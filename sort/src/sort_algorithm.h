@@ -9,4 +9,5 @@ void newVecQSort(vector<int>& vec);
 void mergeSort(vector<int>& vec);
 void insertSort(vector<int>&vec);
 void bucketSort(vector<int>& vec);
+void countSort(vector<int>& vec);
 #endif
