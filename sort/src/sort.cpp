@@ -3,6 +3,9 @@
 #include<time.h>
 #include<chrono>
 #include<random>
+#include<stdint.h>
+#include<limits>
+#include<climits>
 #include"./priority_queue.h"
 #include"./sort_algorithm.h"
 using std::vector;
@@ -35,7 +38,7 @@ int main()
     high_resolution_clock::time_point t1 = high_resolution_clock::now();
     Priority_Queue<int>::heapSort(originVec);
     high_resolution_clock::time_point t2 = high_resolution_clock::now();
-    duration<double> time_span = duration_cast<duration<double>>(t2-t1);
+    duration<double> time_span = duration_cast<duration<double> >(t2-t1);
     #ifdef DISPLAY 
     displayVec(originVec);
     #endif
