@@ -1,0 +1,24 @@
+Input num
+num = 1000000
+INT MAX = 2147483647
+sorted
+random vector, heapSort time consumed:0.203147 seconds
+--------------------------
+sorted
+random vector, quickSort time consumed:0.109357 seconds
+--------------------------
+sorted
+random vector, quickSortFatPartition time consumed:0.125023 seconds
+--------------------------
+sorted
+random vector, quickSort with auxilary vector time consumed:0.359397 seconds
+--------------------------
+sorted
+random vector, mergeSort time consumed:0.171876 seconds
+--------------------------
+sorted
+random vector, bucketSort time consumed:0.015626 seconds
+--------------------------
+sorted
+random vector, countSort time consumed:0.01565 seconds
+--------------------------
