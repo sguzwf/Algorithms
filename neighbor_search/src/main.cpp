@@ -2,6 +2,7 @@
 #include<vector>
 #include<random>
 #include<chrono>
+#include<cassert>
 #include"SegmentTree.h"
 #include"Particle.h"
 #define RANGE 1000
@@ -9,6 +10,7 @@
 #define TESTNUM 100 // number of test case
 using namespace std::chrono;
 void autoSegmentTreeTest(const StaticSegmentTree& , int);
+void genRandPartiles(double, double , double , unsigned int , vector<Particle>& );
 int main()
 {
     std::default_random_engine engine(std::random_device {}());
@@ -20,16 +22,13 @@ int main()
     }
     autoSegmentTreeTest(tree, TESTNUM);
 
-    Particle p;
-    p.x(3);
-    p.y(4);
-    p.rx(7);
-    p.ry(9);
+    auto particles = vector<Particle>();
+    genRandPartiles(0, RANGE, 50, 5, particles);
 
-    auto fuck = p;
-    fuck.rx(9);
-    fuck.printInfo();
-    p.printInfo();
+    for(auto v : particles)
+    {
+        v.printInfo();
+    }
     return 0;
 }
 void autoSegmentTreeTest(const StaticSegmentTree& stree, int testNum)
@@ -56,4 +55,22 @@ void autoSegmentTreeTest(const StaticSegmentTree& stree, int testNum)
         }
     }
     std::cout << "passed " << testNum << " test cases" << std::endl;
+}
+void genRandPartiles(double leftRange, double rightRange, double maxR, unsigned int particleNum, vector<Particle>& vec)
+{
+    // assert(vec.empty());
+    assert(vec.empty());
+    assert(maxR > 0);
+    std::default_random_engine gen(std::random_device {}());
+    std::uniform_real_distribution<double>distrPos(leftRange, rightRange);
+    std::uniform_real_distribution<double>distR(0, maxR);
+    vec.reserve(particleNum);
+    for (unsigned int i = 0; i < particleNum; i++)
+    {
+        double randX  = distrPos(gen);
+        double randY  = distrPos(gen);
+        double randRx = distR(gen);
+        double randRy = distR(gen);
+        vec.push_back(Particle(randX, randY, randRx, randRy));
+    }
 }

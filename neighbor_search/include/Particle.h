@@ -16,6 +16,8 @@ public:
     double y()  const;
     double rx() const;
     double ry() const;
+    double distance(const Particle&) const;
+    bool inRange(const Particle&) const;
     Particle& x(double);
     Particle& y(double);
     Particle& rx(double);

@@ -2,6 +2,7 @@
 #include<vector>
 #include<map>
 #include<cassert>
+#include<cmath>
 #include"Particle.h"
 using std::vector;
 using std::map;
@@ -58,6 +59,18 @@ Particle& Particle::operator=(const Particle& p)
     _rx = p._rx;
     _ry = p._ry;
     return *this;
+}
+double Particle::distance(const Particle& p) const
+{
+    auto dx = _x - p._x;
+    auto dy = _y - p._y;
+    return sqrt(dx * dx + dy * dy);
+}
+bool Particle::inRange(const Particle& p) const
+{
+    bool xInRange = (_x - _rx <= p._x) &&  (p._x <= _x + _rx);
+    bool yInRange = (_y - _ry <= p._y) &&  (p._y <= _y + _ry);
+    return xInRange && yInRange;
 }
 void Particle::printInfo()
 {
