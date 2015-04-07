@@ -2,7 +2,7 @@
 #include<vector>
 #include<cassert>
 #include<random>
-#include"segmentTree.h"
+#include"SegmentTree.h"
 using std::vector;
 StaticSegmentTree::~StaticSegmentTree()
 {

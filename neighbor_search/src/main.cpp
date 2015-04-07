@@ -2,7 +2,8 @@
 #include<vector>
 #include<random>
 #include<chrono>
-#include"segmentTree.h"
+#include"SegmentTree.h"
+#include"Particle.h"
 #define RANGE 1000
 #define NUM 10000
 #define TESTNUM 100 // number of test case
@@ -18,6 +19,17 @@ int main()
         tree.insert(distribuition(engine));
     }
     autoSegmentTreeTest(tree, TESTNUM);
+
+    Particle p;
+    p.x(3);
+    p.y(4);
+    p.rx(7);
+    p.ry(9);
+
+    auto fuck = p;
+    fuck.rx(9);
+    fuck.printInfo();
+    p.printInfo();
     return 0;
 }
 void autoSegmentTreeTest(const StaticSegmentTree& stree, int testNum)

@@ -1,1 +1,3 @@
-./build/ns
+cd build
+./ns
+cd ..
