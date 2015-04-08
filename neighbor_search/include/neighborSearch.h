@@ -4,7 +4,8 @@
 #include<vector>
 #include<map>
 #include"Particle.h"
+#include"SegmentTree.h"
 using std::vector;
 using std::map;
-void neighborSearch(const vector<Particle>&, map<int, vector<int>>);
+void neighborSearch(const vector<Particle*>&, map<Particle*,vector<Particle*>>&);
 #endif

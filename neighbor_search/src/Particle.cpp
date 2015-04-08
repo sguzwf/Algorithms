@@ -3,10 +3,16 @@
 #include<map>
 #include<cassert>
 #include<cmath>
+#include<limits>
+#include<random>
 #include"Particle.h"
 using std::vector;
 using std::map;
 Particle::Particle()
+    : _x(0),
+      _y(0),
+      _rx(std::numeric_limits<double>::infinity()),
+      _ry(std::numeric_limits<double>::infinity())
 {}
 Particle::Particle(double x, double y, double rx, double ry)
     : _x(x), _y(y), _rx(rx), _ry(ry)
@@ -30,36 +36,6 @@ double Particle::ry() const
 {
     return _ry;
 }
-Particle& Particle::x(double xx)
-{
-    _x = xx;
-    return *this;
-}
-Particle& Particle::y(double yy)
-{
-    _y = yy;
-    return *this;
-}
-Particle& Particle::rx(double rrxx)
-{
-    assert(rrxx > 0);
-    _rx = rrxx;
-    return *this;
-}
-Particle& Particle::ry(double rryy)
-{
-    assert(rryy > 0);
-    _ry = rryy;
-    return *this;
-}
-Particle& Particle::operator=(const Particle& p)
-{
-    _x  = p._x;
-    _y  = p._y;
-    _rx = p._rx;
-    _ry = p._ry;
-    return *this;
-}
 double Particle::distance(const Particle& p) const
 {
     auto dx = _x - p._x;
@@ -80,4 +56,21 @@ void Particle::printInfo()
     std::cout << "rx: " << _rx << std::endl;
     std::cout << "ry: " << _ry << std::endl;
     std::cout << "__________________________________" << std::endl;
+}
+void genRandPartiles(double leftRange, double rightRange, double maxR, unsigned int particleNum, vector<Particle>& vec)
+{
+    // 随机生成一些粒子
+    assert(vec.empty());
+    assert(maxR > 0);
+    std::default_random_engine gen(std::random_device {}());
+    std::uniform_real_distribution<double>distrPos(leftRange, rightRange);
+    std::uniform_real_distribution<double>distR(0, maxR);
+    for (unsigned int i = 0; i < particleNum; i++)
+    {
+        double randX  = distrPos(gen);
+        double randY  = distrPos(gen);
+        double randRx = distR(gen);
+        double randRy = distR(gen);
+        vec.push_back(Particle(randX, randY, randRx, randRy));
+    }
 }

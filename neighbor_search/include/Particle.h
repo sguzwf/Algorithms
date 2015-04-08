@@ -1,14 +1,17 @@
 #ifndef PARTICLE_H
 #define PARTICLE_H
+#include<vector>
+using std::vector;
 class Particle
 {
 private:
     // the whole search range would be rectangular formed by:
     // (x-rx,y-ry),(x-rx,y+ry),(x+rx,y-ry),(x+rx,y+ry)
-    double _x  = 0;  // position x
-    double _y  = 0;  // position y
-    double _rx = 0;  // searchRange x
-    double _ry = 0;  // searchRange y
+    // a particle is immutable
+    const double _x  = 0;  // position x
+    const double _y  = 0;  // position y
+    const double _rx = 0;  // searchRange x
+    const double _ry = 0;  // searchRange y
 public:
     Particle();
     Particle(double, double, double, double);
@@ -18,11 +21,7 @@ public:
     double ry() const;
     double distance(const Particle&) const;
     bool inRange(const Particle&) const;
-    Particle& x(double);
-    Particle& y(double);
-    Particle& rx(double);
-    Particle& ry(double);
-    Particle& operator=(const Particle&);
     void printInfo();
 };
+void genRandPartiles(double, double , double , unsigned int , vector<Particle>& );
 #endif

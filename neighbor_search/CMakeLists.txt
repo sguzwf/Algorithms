@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-# set(CMAKE_CXX_COMPILER clang++)
+set(CMAKE_CXX_COMPILER clang++)
 project(neighbor_search)
 # add_subdirectory(src)
 set(CMAKE_BUILD_TYPE debug)
