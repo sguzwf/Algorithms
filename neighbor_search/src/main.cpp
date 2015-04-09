@@ -38,12 +38,12 @@ int main()
         freeParticles(pVec);
         return EXIT_FAILURE;
     }
-    auto newTree = StaticSegmentTree(1, RANGE, MININTERVAL);
-    // tree = StaticSegmentTree(1, RANGE, MININTERVAL);
+    // auto newTree = StaticSegmentTree(1, RANGE, MININTERVAL);
+    tree = StaticSegmentTree(1, RANGE, MININTERVAL);
 
     auto searchResult = map<Particle*,vector<Particle*>>();
 
-    neighborSearch(pVec,searchResult,newTree);
+    neighborSearch(pVec,searchResult,tree);
     if(! autoTestSearchResult(searchResult))
         return EXIT_FAILURE;
     return EXIT_SUCCESS;

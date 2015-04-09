@@ -103,8 +103,13 @@ vector<Particle* > StaticSegmentTree::query(double left, double right) const
 StaticSegmentTree& StaticSegmentTree::operator=(const StaticSegmentTree& tree)
 {
     _isLeaf     = tree._isLeaf;
-    _leftTree   = tree._leftTree;
-    _rightTree  = tree._rightTree;
+    if(! _isLeaf)
+    {
+        *_leftTree  = *(tree._leftTree);
+        *_rightTree = *(tree._rightTree);
+    }
+    // _leftTree   = tree._leftTree;
+    // _rightTree  = tree._rightTree;
     _leftRange  = tree._leftRange;
     _rightRange = tree._rightRange;
     return *this;
