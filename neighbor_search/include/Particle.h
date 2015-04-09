@@ -23,5 +23,5 @@ public:
     bool inRange(const Particle&) const;
     void printInfo();
 };
-void genRandPartiles(double, double , double , unsigned int , vector<Particle>& );
+void genRandPartiles(double, double , double , unsigned int , vector<Particle*>& );
 #endif

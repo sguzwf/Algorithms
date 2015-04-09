@@ -44,6 +44,7 @@ double Particle::distance(const Particle& p) const
 }
 bool Particle::inRange(const Particle& p) const
 {
+    // p is in range of **this**
     bool xInRange = (_x - _rx <= p._x) &&  (p._x <= _x + _rx);
     bool yInRange = (_y - _ry <= p._y) &&  (p._y <= _y + _ry);
     return xInRange && yInRange;
@@ -57,12 +58,11 @@ void Particle::printInfo()
     std::cout << "ry: " << _ry << std::endl;
     std::cout << "__________________________________" << std::endl;
 }
-void genRandPartiles(double leftRange, double rightRange, double maxR, unsigned int particleNum, vector<Particle>& vec)
-{
+void genRandPartiles(double leftRange, double rightRange, double maxR, unsigned int particleNum, vector<Particle*>& vec) {
     // 随机生成一些粒子
     assert(vec.empty());
     assert(maxR > 0);
-    std::default_random_engine gen(std::random_device {}());
+    std::default_random_engine gen(0);
     std::uniform_real_distribution<double>distrPos(leftRange, rightRange);
     std::uniform_real_distribution<double>distR(0, maxR);
     for (unsigned int i = 0; i < particleNum; i++)
@@ -71,6 +71,6 @@ void genRandPartiles(double leftRange, double rightRange, double maxR, unsigned 
         double randY  = distrPos(gen);
         double randRx = distR(gen);
         double randRy = distR(gen);
-        vec.push_back(Particle(randX, randY, randRx, randRy));
+        vec.push_back(new Particle(randX, randY, randRx, randRy));
     }
 }

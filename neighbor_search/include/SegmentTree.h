@@ -17,6 +17,7 @@ public:
     vector<Particle*> query(double, double)const;
     double leftRange() const {return _leftRange;}
     double rightRange() const {return _rightRange;}
+    StaticSegmentTree& operator=(const StaticSegmentTree&);
 private:
     bool _isLeaf;
     StaticSegmentTree* _leftTree;
@@ -31,5 +32,5 @@ private:
     // 不过我也不知道这样是不是合理。
     vector<Particle*>* _leafValues = nullptr;
 };
-void autoSegmentTreeTest(const StaticSegmentTree& , unsigned int , int , int );
+bool autoSegmentTreeTest(const StaticSegmentTree& , unsigned int , int , int );
 #endif

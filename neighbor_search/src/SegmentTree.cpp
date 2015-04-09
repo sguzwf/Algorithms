@@ -18,7 +18,7 @@ StaticSegmentTree::~StaticSegmentTree()
     _leafValues = nullptr;
 }
 StaticSegmentTree::StaticSegmentTree(double left, double right, double minInterval)
-    : _leftRange(left), _rightRange(right)
+    : _isLeaf(false),_leftRange(left), _rightRange(right)
 {
     assert(left <= right);
     assert(minInterval > 0);
@@ -43,6 +43,12 @@ StaticSegmentTree::StaticSegmentTree(double left, double right, double minInterv
 void StaticSegmentTree::insert(Particle* p)
 {
     double value = p->y();
+    if (!( _leftRange <= value && value <= _rightRange))
+    {
+        std::cout << "_leftRange = " << _leftRange << std::endl;
+        std::cout << "_rightRange = " << _rightRange << std::endl;
+        std::cout << "value = " << value << std::endl;
+    }
     assert( _leftRange <= value && value <= _rightRange);
     if (_isLeaf)
     {
@@ -94,8 +100,18 @@ vector<Particle* > StaticSegmentTree::query(double left, double right) const
     }
     return queryResult;
 }
+StaticSegmentTree& StaticSegmentTree::operator=(const StaticSegmentTree& tree)
+{
+    _isLeaf     = tree._isLeaf;
+    _leftTree   = tree._leftTree;
+    _rightTree  = tree._rightTree;
+    _leftRange  = tree._leftRange;
+    _rightRange = tree._rightRange;
+    return *this;
+}
 
-void autoSegmentTreeTest(const StaticSegmentTree& tree, unsigned int testNum, int leftRange, int rightRange)
+
+bool autoSegmentTreeTest(const StaticSegmentTree& tree, unsigned int testNum, int leftRange, int rightRange)
 {
     // 根据随机生成的range进行query, 再检测query的结果是否全部在range之中
     std::default_random_engine engine(std::random_device {}());
@@ -117,11 +133,12 @@ void autoSegmentTreeTest(const StaticSegmentTree& tree, unsigned int testNum, in
                 std::cout << "unusual particle queried:" << std::endl;
                 p->printInfo();
                 std::cout << "___________________________________________" << std::endl;
-                return;
+                return false;
             }
         }
     }
     std::cout << "Test Successfully!" << std::endl;
     std::cout << "number of test case:" << testNum << std::endl;
     std::cout << "___________________________________________" << std::endl;
+    return true;
 }
