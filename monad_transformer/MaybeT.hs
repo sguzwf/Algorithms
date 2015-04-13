@@ -18,5 +18,4 @@ instance (Monad m) => Monad (MaybeT m) where
                              Nothing  -> return Nothing
                              Just val -> runMaybeT $ f val
 instance MonadTrans MaybeT where 
-    -- lift :: (Monad m) => m a -> MaybeT m a
     lift mv = MaybeT $ mv >>= return . Just

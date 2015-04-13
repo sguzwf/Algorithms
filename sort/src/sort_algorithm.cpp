@@ -88,7 +88,6 @@ void newVecQSort(vector<int>& vec)
     if(vec.size() < 2) return;
     int pivotIdx = 0;
     int pivot    = vec[pivotIdx];
-    int size     = vec.size();
     vector<int> vec1    = vector<int>();
     vector<int> vec2    = vector<int>();
     vector<int> vec3    = vector<int>();
