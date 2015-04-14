@@ -9,6 +9,8 @@ public:
     Interval(double, double);
     double left() const;
     double right() const;
+    bool overlap(const Interval&) const; // whether two interval overlap
+    bool inRange(double) const;
 private:
     double _left;
     double _right;
@@ -21,23 +23,20 @@ public:
     const IntervalTree* right() const;
     bool empty() const;
     double key() const;
-    struct AugMiddle
-    {
-        vector<double> leftEnd;
-        vector<double> rightEnd;
-    };
+    vector<Interval> intervalSearch(const Interval&);
 private:
     double middlePoint(const vector<Interval>&);
     void partition(
         const vector<Interval>&,
+        double,
         vector<Interval>&,
         vector<Interval>&,
-        vector<Interval>&,
-        double);
+        vector<Interval>&);
     double _key;
     bool _empty;
     IntervalTree* _left;
     IntervalTree* _right;
-    AugMiddle* _aux;
+    vector<Interval> middleLeft;
+    vector<Interval> middleRight;
 };
 #endif

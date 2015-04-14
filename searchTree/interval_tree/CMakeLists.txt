@@ -1,3 +1,5 @@
 project(interv)
+set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-add_executable(interv src/main.cpp src/qsort.cpp)
+include_directories(include)
+add_executable(interv src/main.cpp src/qsort.cpp src/interval_tree.cpp)

@@ -1,2 +1,2 @@
-cd ./build
+cd ./out_build
 make
