@@ -78,14 +78,14 @@ IntervalTree::IntervalTree(const vector<Interval>& intervals)
     if (intervals.empty())
     {
         _empty = true;
+        _left  = nullptr;
+        _right = nullptr;
         return;
     }
     double midPoint = middlePoint(intervals);
-    vector<Interval> left;
-    vector<Interval> right;
-    vector<Interval> midd;
+    vector<Interval> left, right, midd;
     partition(intervals, midPoint, left, right, midd);
-    static const auto leftLess = [](const Interval & interv1, const Interval & interv2)->bool
+    static const auto leftCmp = [](const Interval & interv1, const Interval & interv2)->bool
     {
         return interv1.left() < interv2.left();
     };
@@ -93,16 +93,16 @@ IntervalTree::IntervalTree(const vector<Interval>& intervals)
     {
         return interv1.left() == interv2.left();
     };
-    static const auto rightLess = [](const Interval & interv1, const Interval & interv2)->bool
+    static const auto rightCmp = [](const Interval & interv1, const Interval & interv2)->bool
     {
-        return interv1.right() < interv2.right();
+        return interv1.right() > interv2.right();
     };
     static const auto rightEq = [](const Interval & interv1, const Interval & interv2)->bool
     {
         return interv1.right() == interv2.right();
     };
-    middleLeft  = qsort<Interval>(midd, leftLess, leftEq);
-    middleRight = qsort<Interval>(midd, rightLess, rightEq);
+    middleLeft  = qsort<Interval>(midd, leftCmp, leftEq);
+    middleRight = qsort<Interval>(midd, rightCmp, rightEq);
     _empty      = false;
     _key        = midPoint;
     _left       = new IntervalTree(left);
@@ -111,10 +111,12 @@ IntervalTree::IntervalTree(const vector<Interval>& intervals)
 vector<Interval> IntervalTree::intervalSearch(const Interval& queryInterv)
 {
     vector<Interval> result;
+    if (_empty == true)
+        return result;
     if (queryInterv.inRange(_key))
     {
         auto result_left  = _left->intervalSearch(queryInterv);
-        auto result_right = _left->intervalSearch(queryInterv);
+        auto result_right = _right->intervalSearch(queryInterv);
         result.insert(result.end(), middleLeft.begin(), middleLeft.end());
         result.insert(result.end(), result_left.begin(), result_left.end());
         result.insert(result.end(), result_right.begin(), result_right.end());
@@ -145,4 +147,20 @@ vector<Interval> IntervalTree::intervalSearch(const Interval& queryInterv)
     }
     else assert(0);
     return result;
+}
+vector<Interval> IntervalTree::toVector()
+{
+    vector<Interval> result;
+    if(_empty)
+    {
+        return result;
+    }
+    else
+    {
+        auto leftVec  = _left->toVector();
+        auto rightVec = _right->toVector();
+        result.insert(result.end(),middleLeft.begin(),middleLeft.end());
+        result.insert(result.end(),leftVec.begin(),leftVec.end());
+        result.insert(result.end(),rightVec.begin(),rightVec.end());
+    }
 }

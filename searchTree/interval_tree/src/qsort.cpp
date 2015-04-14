@@ -11,8 +11,8 @@ std::default_random_engine g(std::random_device{}());
 template<typename T>
 vector<T> qsort(
         const vector<T>& input,
-        const function<bool(const T&,const T&)>& lessThan,
-        const function<bool(const T&,const T&)>& equal
+        const function<bool(const T&,const T&)>& cmp,
+        const function<bool(const T&,const T&)>& eq
         )
 {
     auto size = input.size();
@@ -29,17 +29,17 @@ vector<T> qsort(
     result.reserve(size);
     for(auto v : input)
     {
-        if(lessThan(v,pivot))
+        if(cmp(v,pivot))
             vec1.push_back(v);
-        else if(equal(v,pivot))
+        else if(eq(v,pivot))
             vec2.push_back(v);
         else 
             vec3.push_back(v);
     }
-    for(auto v : qsort(vec1,lessThan,equal))
+    for(auto v : qsort(vec1,cmp,eq))
         result.push_back(v);
     result.insert(result.end(),vec2.begin(),vec2.end());
-    for(auto v : qsort(vec3,lessThan,equal))
+    for(auto v : qsort(vec3,cmp,eq))
         result.push_back(v);
     return result;
 }

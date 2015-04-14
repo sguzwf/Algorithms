@@ -24,6 +24,7 @@ public:
     bool empty() const;
     double key() const;
     vector<Interval> intervalSearch(const Interval&);
+    vector<Interval> toVector();
 private:
     double middlePoint(const vector<Interval>&);
     void partition(
@@ -31,9 +32,10 @@ private:
         double,
         vector<Interval>&,
         vector<Interval>&,
-        vector<Interval>&);
-    double _key;
+        vector<Interval>&
+    );
     bool _empty;
+    double _key;
     IntervalTree* _left;
     IntervalTree* _right;
     vector<Interval> middleLeft;
