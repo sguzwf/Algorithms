@@ -13,7 +13,6 @@ using std::pair;
 using namespace std::chrono;
 #define RANGE_MIN 0
 #define RANGE_MAX 1000      // all intervals are in [RANGE_MIN, RANGE_MAX]
-#define INTERVAL_NUM 10000   // number of intervals
 #define TESTNUM 100         // number test cases
 typedef std::default_random_engine stdGen;
 typedef std::uniform_real_distribution<double> distr;
@@ -21,10 +20,13 @@ int main()
 {
     stdGen g(0);
     distr  d(RANGE_MIN, RANGE_MAX);
-
+    
+    int interval_num;
+    std::cout<<"Input interval num:"<<std::endl;
+    std::cin>>interval_num;
     auto interval_vec = vector<Interval>();
-    interval_vec.reserve(INTERVAL_NUM);
-    for (int i = 0; i < INTERVAL_NUM; i++)
+    interval_vec.reserve(interval_num);
+    for (int i = 0; i < interval_num; i++)
     {
         double edge_1     = d(g);
         double edge_2     = d(g);
@@ -60,7 +62,7 @@ int main()
     }
     time_span /= TESTNUM;
     std::cout << TESTNUM << " tests passed" << std::endl;
-    std::cout << "interval num: " << INTERVAL_NUM << std::endl;
+    std::cout << "interval num: " << interval_num << std::endl;
     std::cout << "average query time: " << time_span << " secondes" << std::endl;
 
     double inputLeft = RANGE_MIN - 1, inputRight = RANGE_MAX + 1;
