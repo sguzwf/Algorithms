@@ -1,15 +1,19 @@
 #ifndef SEGMENT_TREE_H
 #define SEGMENT_TREE_H
-#include"utility"
+#include<utility>
+#include<queue>
 using std::pair;
+using std::vector;
 class SegmentTree
 {
 public:
     SegmentTree();
     SegmentTree(int s, int t);
     ~SegmentTree();
-    int rangeLeft();
-    int rangeRight();
+    int rangeLeft() const;
+    int rangeRight() const;
+
+    vector<SegmentTree*> Interval_Insertion(int,int);
     SegmentTree* leftTree();
     SegmentTree* rightTree();
 private:
