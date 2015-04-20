@@ -1,0 +1,5 @@
+# set(CMAKE_CXX_COMPILER clang++)
+project(love)
+set(CMAKE_BUILD_TYPE release)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g")
+add_executable(tree main.cpp)

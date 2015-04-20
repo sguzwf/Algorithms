@@ -1,0 +1,7 @@
+*.swp
+callgrind*
+qt_build/
+CMakeCache.txt
+CMakeFiles/
+*.user
+cmake_install.cmake
