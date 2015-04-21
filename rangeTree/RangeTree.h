@@ -19,14 +19,13 @@ struct Point
     Point(double xx, double yy, double zz)
         : x(xx), y(yy), z(zz)
     {}
+    void printPoint()
+    {
+        printf("(%f,%f,%f)\n",x,y,z);
+    }
     Point()
     {}
 };
-void printPoints(Point* pArr, int len)
-{
-    for (int i = 0; i < len; i++)
-        cout << "(" << pArr[i].x << "," << pArr[i].y << "," << pArr[i].z << ")" << endl;
-}
 inline bool compX(const Point& p1, const Point& p2)
 {
     return p1.x < p2.x;
@@ -44,6 +43,7 @@ class RangeTree
 private:
     double _key;
     int _dim;
+    int _pointNum;
 
     bool _isLeaf;
     bool _isEmpty;
@@ -51,7 +51,8 @@ private:
     RangeTree* _right;
     RangeTree* _aux;
     Point* _data_1d;
-
+    RangeTree* findSplitNode(double, double);
+    void rangeQuery1D(double, double, vector<Point>&);
     // vector<Point> pointSort(size_t, const vector<Point>&) const;
 public:
     double key() const
@@ -59,16 +60,19 @@ public:
         return _key;
     }
     RangeTree(Point*, unsigned short, int, bool );
+    void RangeQuery(double[3][2], vector<Point>&);
+    void exportPoints();
     ~RangeTree();
 };
 RangeTree::RangeTree(Point* points, unsigned short dim, int len, bool lastDimSorted)
+    : _dim(dim), _pointNum(len)
 {
     // is empty: points.empty()
     // is lear: only one distinct value in dim
 
     // pre sort
     // std::cout<<"here"<<std::endl;
-    _dim = dim;
+    // _dim = dim;
     if (!lastDimSorted)
     {
         switch (dim)
@@ -118,7 +122,8 @@ RangeTree::RangeTree(Point* points, unsigned short dim, int len, bool lastDimSor
         // for (auto p : points)
         //     _key += p[dim - 1];
         // _key /= points.size();
-        auto p       = points[len / 2];
+        decltype(len) middleIdx = (len - 1) / 2;
+        auto p       = points[middleIdx];
         auto pLast   = points[len - 1];
         double lastV = (dim == 3 ? pLast.z : pLast.y);
         _key = (dim == 3 ? p.z : p.y);
@@ -132,18 +137,131 @@ RangeTree::RangeTree(Point* points, unsigned short dim, int len, bool lastDimSor
             _aux     = new RangeTree(points, dim - 1, len, false);
             return;
         }
-        int leftLen        = len / 2 + 1;
-        int rightLen       = len - (len / 2 + 1);
+        int leftLen        = middleIdx + 1;
+        int rightLen       = len - leftLen;
         Point* leftPoints  = new Point[leftLen];
         Point* rightPoints = new Point[rightLen];
         memcpy(leftPoints, points, leftLen * sizeof(Point));
-        memcpy(rightPoints, points + len / 2 + 1, rightLen * sizeof(Point));
+        memcpy(rightPoints, points + leftLen, rightLen * sizeof(Point));
         _isLeaf  = false;
         _isEmpty = false;
-        // printPoints(leftPoints,leftLen);
         _left    = new RangeTree(leftPoints, dim, leftLen, true);
         _right   = new RangeTree(rightPoints, dim, rightLen, true);
         _aux     = new RangeTree(points, dim - 1, len, false);
+    }
+}
+RangeTree* RangeTree::findSplitNode(double left , double right)
+{
+    // if this is a bottol neck,
+    // try refactoring this function into using iteration instead of recursion
+    if (left <= _key && _key <= right)
+    {
+        return this;
+    }
+    else if (left > _key && _right)
+    {
+        return _right->findSplitNode(left, right);
+    }
+    else if (right < _key && _left)
+    {
+        return _left->findSplitNode(left, right);
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
+void RangeTree::rangeQuery1D(double left, double right, vector<Point>& result)
+{
+    assert(_dim == 1);
+    assert(_isLeaf);
+    decltype(_pointNum) leftIdx  = 0;
+    decltype(_pointNum) rightIdx = (_pointNum - 1);
+    while (leftIdx < rightIdx)
+    {
+        decltype(leftIdx) middleIdx = (leftIdx + rightIdx) / 2;
+        if (_data_1d[middleIdx].x > left)
+        {
+            rightIdx = middleIdx;
+        }
+        else if (_data_1d[middleIdx].x < left)
+        {
+            leftIdx = middleIdx + 1;
+        }
+    }
+    while (_data_1d[leftIdx].x <= right && leftIdx < _pointNum)
+    {
+        result.push_back(_data_1d[leftIdx]);
+        leftIdx++;
+    }
+}
+void RangeTree::RangeQuery(double range[3][2], vector<Point>& result)
+{
+    // left and right edges of interval
+    double left  = range[_dim - 1][0];
+    double right = range[_dim - 1][1];
+
+    auto s = findSplitNode(left, right);
+    if ((!s) || s->_isEmpty) return;
+    if (s->_isLeaf)
+    {
+        if (_dim == 1)
+        {
+            s->rangeQuery1D(left, right, result);
+        }
+        else
+        {
+            s->_aux->RangeQuery(range,result);
+        }
+        // assert(_dim == 1);
+        // // s->rangeQuery1D(left, right, result);
+        return;
+    }
+    auto v = s->_left;
+    while (! v->_isLeaf)
+    {
+        if (left <= v->_key)
+        {
+            v->_aux->RangeQuery(range, result);
+            v = v->_left;
+        }
+        else
+        {
+            v = v->_right;
+        }
+    }
+    v->_aux->RangeQuery(range, result);
+    //v->rangeQuery1D(range[0][0], range[0][1], result);
+    v = s->_right;
+    while (! v->_isLeaf)
+    {
+        if (right > v->_key)
+        {
+            v->_aux->RangeQuery(range, result);
+            v = v->_right;
+        }
+        else
+        {
+            v = v->_left;
+        }
+    }
+    v->_aux->RangeQuery(range, result);
+    //v->rangeQuery1D(range[0][0], range[0][1], result);
+}
+void RangeTree::exportPoints()
+{
+    if(_isEmpty) return;
+    if(_dim == 1)
+    {
+        for(decltype(_pointNum) i = 0; i < _pointNum; i++)
+            _data_1d[i].printPoint();
+    }
+    else
+    {
+        if(_left) _left->exportPoints();
+        if(_right) _right->exportPoints();
+        if(_aux) _aux->exportPoints();
     }
 }
 RangeTree::~RangeTree()
