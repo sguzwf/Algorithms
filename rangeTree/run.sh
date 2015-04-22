@@ -1,2 +1,2 @@
 cd out_build
-./tree
+./tree 80000

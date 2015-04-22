@@ -178,12 +178,14 @@ RangeTree* RangeTree::findSplitNode(double left , double right)
 
 void RangeTree::rangeQuery1D(double left, double right, vector<Point>& result)
 {
-    assert(_dim == 1);
-    assert(_isLeaf);
-     vector<Point> debugVec = vector<Point>(_data_1d,_data_1d+_pointNum);
+    // assert(_dim == 1);
+    // assert(_isLeaf);
+    // vector<Point> debugVec = vector<Point>(_data_1d,_data_1d+_pointNum);
 
     decltype(_pointNum) leftIdx  = 0;
     decltype(_pointNum) rightIdx = (_pointNum - 1);
+    if(_data_1d[0].x > right || _data_1d[rightIdx].x < left)
+        return;
     while (leftIdx < rightIdx)
     {
         decltype(leftIdx) middleIdx = (leftIdx + rightIdx) / 2;
@@ -225,19 +227,16 @@ void RangeTree::RangeQuery(double range[3][2], vector<Point>& result)
     // left and right edges of interval
     double left  = range[_dim - 1][0];
     double right = range[_dim - 1][1];
-
+    if(_dim == 1)
+    {
+        rangeQuery1D(left,right,result);
+        return;
+    }
     auto s = findSplitNode(left, right);
     if ((!s) || s->_isEmpty) return;
     if (s->_isLeaf)
     {
-        if (_dim == 1)
-        {
-            s->rangeQuery1D(left, right, result);
-        }
-        else
-        {
-            s->_aux->RangeQuery(range, result);
-        }
+        s->_aux->RangeQuery(range, result);
         return;
     }
     auto v = s->_left;
