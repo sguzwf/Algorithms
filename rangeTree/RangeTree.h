@@ -23,6 +23,10 @@ struct Point
     {
         printf("(%f,%f,%f)\n", x, y, z);
     }
+    inline bool inRange (const Point& p, double radius) const
+    {
+        return (x - p.x) * (x - p.x) + (y - p.y) * (y - p.y) + (z - p.z) * (z - p.z) <= radius * radius;
+    }
     Point()
     {}
 };
@@ -176,6 +180,8 @@ void RangeTree::rangeQuery1D(double left, double right, vector<Point>& result)
 {
     assert(_dim == 1);
     assert(_isLeaf);
+     vector<Point> debugVec = vector<Point>(_data_1d,_data_1d+_pointNum);
+
     decltype(_pointNum) leftIdx  = 0;
     decltype(_pointNum) rightIdx = (_pointNum - 1);
     while (leftIdx < rightIdx)
@@ -185,8 +191,11 @@ void RangeTree::rangeQuery1D(double left, double right, vector<Point>& result)
             rightIdx = middleIdx;
         else if (_data_1d[middleIdx].x < left)
             leftIdx = middleIdx + 1;
+        else
+            leftIdx = middleIdx;
     }
-    decltype(leftIdx) startIdx = leftIdx;
+    decltype(leftIdx) startIdx = _data_1d[leftIdx].x < left ? leftIdx + 1 : leftIdx;
+    rightIdx = _pointNum - 1;
     while (leftIdx < rightIdx)
     {
         decltype(leftIdx) middleIdx = (leftIdx + rightIdx) / 2;
@@ -194,9 +203,17 @@ void RangeTree::rangeQuery1D(double left, double right, vector<Point>& result)
             rightIdx = middleIdx;
         else if (_data_1d[middleIdx].x < right)
             leftIdx = middleIdx + 1;
+        else 
+            rightIdx = middleIdx;
     }
-    decltype(rightIdx) endIdx = rightIdx;
-    result.insert(result.end(), _data_1d + startIdx, _data_1d + endIdx);
+    decltype(rightIdx) endIdx = _data_1d[rightIdx].x > right ? rightIdx - 1 : rightIdx;
+    result.insert(result.end(), _data_1d + startIdx, _data_1d + endIdx + 1);
+
+    // for(const Point& p : result)
+    // {
+    //     if(p.x < left || p.x > right)
+    //         assert(false);
+    // }
     // while (_data_1d[leftIdx].x <= right && leftIdx < _pointNum)
     // {
     //     result.push_back(_data_1d[leftIdx]);
@@ -221,8 +238,6 @@ void RangeTree::RangeQuery(double range[3][2], vector<Point>& result)
         {
             s->_aux->RangeQuery(range, result);
         }
-        // assert(_dim == 1);
-        // // s->rangeQuery1D(left, right, result);
         return;
     }
     auto v = s->_left;
@@ -230,7 +245,7 @@ void RangeTree::RangeQuery(double range[3][2], vector<Point>& result)
     {
         if (left <= v->_key)
         {
-            v->_aux->RangeQuery(range, result);
+            v->_right->_aux->RangeQuery(range, result);
             v = v->_left;
         }
         else
@@ -240,13 +255,12 @@ void RangeTree::RangeQuery(double range[3][2], vector<Point>& result)
     }
     if (v->_key <= right && v->_key >= left)
         v->_aux->RangeQuery(range, result);
-    //v->rangeQuery1D(range[0][0], range[0][1], result);
     v = s->_right;
     while (! v->_isLeaf)
     {
         if (right > v->_key)
         {
-            v->_aux->RangeQuery(range, result);
+            v->_left->_aux->RangeQuery(range, result);
             v = v->_right;
         }
         else
@@ -256,7 +270,6 @@ void RangeTree::RangeQuery(double range[3][2], vector<Point>& result)
     }
     if (v->_key <= right && v->_key >= left)
         v->_aux->RangeQuery(range, result);
-    //v->rangeQuery1D(range[0][0], range[0][1], result);
 }
 void RangeTree::exportPoints()
 {

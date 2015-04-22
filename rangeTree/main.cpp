@@ -3,7 +3,7 @@
 #include<cassert>
 #include<chrono>
 #include<random>
-#include<omp.h>
+#include<algorithm>
 #include"RangeTree.h"
 using std::cout;
 using std::endl;
@@ -13,11 +13,14 @@ int main(int num, char** arguments)
 {
 
     // std::default_random_engine g(std::random_device {}());
+    // assert(num >= 2);
+    int particleNum = atoi(arguments[1]);
+    // int particleNum = 9;
     std::default_random_engine g(0);
     std::uniform_real_distribution<double> d(0, RANDMAX);
-    int particleNum = atoi(arguments[1]);
-    Point* points = new Point[particleNum];
-    omp_set_num_threads(1);
+
+
+    Point* points   = new Point[particleNum];
     for (int i = 0; i < particleNum; i++)
     {
         double x = d(g);
@@ -25,10 +28,8 @@ int main(int num, char** arguments)
         double z = d(g);
         points[i] = Point(x, y, z);
     }
+    auto debugVec = vector<Point>(points, points + particleNum);
 
-    // Point* points = new Point[particleNum];
-    // points[0] = Point(0.5,0.5,0.5);
-    // points[1] = Point(1.5,1.5,1.5);
     auto t1 = high_resolution_clock::now();
     RangeTree rTree(points, 3, particleNum, false);
     auto t2 = high_resolution_clock::now();
@@ -38,12 +39,11 @@ int main(int num, char** arguments)
 
     auto t3 = high_resolution_clock::now();
     double range[3][2] ;
-    double radius = 3;
-#pragma omp parallel for
+    double radius = 0.1 * RANDMAX;
     for (decltype(particleNum) i = 0; i < particleNum; i++)
     {
         vector<Point> result = vector<Point>();
-        vector<Point> result2 = vector<Point>();
+        vector<Point> result2;
         const Point& pp = points[i];
         range[0][0] = pp.x - radius;
         range[0][1] = pp.x + radius;
@@ -52,38 +52,17 @@ int main(int num, char** arguments)
         range[2][0] = pp.z - radius;
         range[2][1] = pp.z + radius;
         rTree.RangeQuery(range, result);
+        // auto it = std::copy_if( result.begin(), result.end(), std::back_inserter(result2), [&](const Point& p)->bool{
+        //         return pp.inRange(p,radius);
+        // });
+        result2.reserve(result.size() * 0.7);
         for (const auto & p : result)
         {
-            // if (fabs(p.x - pp.x) > radius)
-            // {
-            //     cout << "x confilction" << endl;
-            //     cout << "radius: " << radius << endl;
-            //     p.printPoint();
-            //     pp.printPoint();
-            //     assert(0);
-            // }
-            // if (fabs(p.y - pp.y) > radius)
-            // {
-            //     cout << "y confilction" << endl;
-            //     cout << "radius: " << radius << endl;
-            //     p.printPoint();
-            //     pp.printPoint();
-            //     assert(0);
-            // }
-            // if (fabs(p.z - pp.z) > radius)
-            // {
-            //     cout << "z confilction" << endl;
-            //     cout << "radius: " << radius << endl;
-            //     p.printPoint();
-            //     pp.printPoint();
-            //     assert(0);
-            // }
-            if ((p.x - pp.x) * (p.x - pp.x) + (p.y - pp.y) * (p.y - pp.y) + (p.z - pp.z) * (p.z - pp.z) <= radius * radius)
+            if (pp.inRange(p, radius))
             {
                 result2.push_back(p);
             }
         }
-        // cout << result2.size() << endl;
     }
     auto t4 = high_resolution_clock::now();
     double queryTime = duration_cast<duration<double>>(t4 - t3).count();
