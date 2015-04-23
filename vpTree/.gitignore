@@ -1,0 +1,10 @@
+*.swp
+callgrind*
+qt_build/
+out_build/
+CMakeCache.txt
+CMakeFiles/
+*.user
+cmake_install.cmake
+# exe
+search
