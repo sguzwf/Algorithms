@@ -1,6 +1,7 @@
 #include"Point.h"
 #include<iostream>
 #include<limits>
+#include<cmath>
 using std::cout;
 using std::endl;
 Point::Point()
@@ -43,5 +44,17 @@ Point& Point::z(double v)
 }
 void Point::printPoint() const
 {
-    cout << "(" << _x << " , " << _y << " , " << _z << ")" << endl;
+    cout << "(" << _x << ", " << _y << ", " << _z << ")" << endl;
+}
+double Point::distance(const Point& p) const
+{
+    return sqrt(
+               (_x - p._x) * (_x - p._x) +
+               (_y - p._y) * (_y - p._y) +
+               (_z - p._z) * (_z - p._z)
+           );
+}
+bool Point::inRange(const Point& p, double radius) const
+{
+    return this->distance(p) < radius;
 }
