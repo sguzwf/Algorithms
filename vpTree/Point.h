@@ -16,6 +16,7 @@ class Point
         void printPoint() const;
         double distance(const Point& p) const;
         bool inRange(const Point& p, double radius) const;
+        bool operator==(const Point&) const;
     private:
         double _x,_y,_z;
 };

@@ -58,3 +58,7 @@ bool Point::inRange(const Point& p, double radius) const
 {
     return this->distance(p) < radius;
 }
+bool Point::operator==(const Point& p) const
+{
+    return (_x == p._x) && (_y == p._y) && (_z == p._z);
+}

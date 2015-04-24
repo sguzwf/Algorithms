@@ -15,6 +15,7 @@ public:
     void search(const Point&, double, vector<Point>&) const;
     bool isLeaf() const;
     void exportPoints() const;
+    const VPTree* findNode(const Point&) const;
 private:
     Point*  _p;
     double  _splitDistance;
@@ -23,3 +24,4 @@ private:
     VPTree* _left;
     VPTree* _right;
 };
+
