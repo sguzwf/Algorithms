@@ -1,10 +1,11 @@
 #include<iostream>
 #include<vector>
+#include<thread>
 #include<random>
 #include<chrono>
 #include<string>
 #include<cassert>
-#include<omp.h>
+#include<algorithm>
 #include"Point.h"
 #include"VPTree.h"
 using std::cin;
@@ -25,12 +26,10 @@ vector<Point> randomPoints(int);
 int main(int argNum, char** args)
 {
     int particleNum = 4;
+    int threadNum   = 1;
     if (argNum >= 2)
         particleNum = atoi(args[1]);
     vector<Point> points = randomPoints(particleNum);
-    // for (const auto & p : points)
-    //     p.printPoint();
-    // cout << "-----------------" << endl;
     cout << "range max:" << RANGEMAX << endl;
     auto t1 = high_resolution_clock::now();
     auto vTree = VPTree(points);
@@ -39,40 +38,33 @@ int main(int argNum, char** args)
     double constructionTime = duration_cast<duration<double>>(t2 - t1).count();
     cout << "construction time: " << constructionTime << " seconds" << endl;
 
-    double radius = 0.1619 * (double)RANGEMAX;
-    int pairsum   = 0;
+    double radius = 0.1 * (double)RANGEMAX;
     cout << "radius: " << radius << endl;
+    int pairsum  = 0;
     auto results = vector<vector<Point>>(particleNum);
-    auto t3 = high_resolution_clock::now();
-    // for (const auto & p : points)
-#pragma omp parallel for
+    auto t3      = high_resolution_clock::now();
     for (decltype(points.size()) i = 0; i < points.size(); i++)
     {
         vTree.search(points[i], radius, results[i]);
     }
     auto t4 = high_resolution_clock::now();
     double searchTime = duration_cast<duration<double>>(t4 - t3).count();
-    for(auto& r : results)
+    for (auto & r : results)
         pairsum += r.size();
     cout << "pair sum: " << pairsum << endl;
     cout << "search time: " << searchTime << " seconds" << endl;
+    cout << "search + construct: " << (searchTime + constructionTime) << " seconds" << endl;
     cout << "_____________" << endl;
 
     int directPairNum = 0;
     auto directResult = vector<vector<Point>>(particleNum);
     auto t5 = high_resolution_clock::now();
-    // for(const auto& p1 : points)
     for (decltype(points.size()) i = 0; i < points.size(); i++)
     {
-        for (const auto & p : points)
+        std::copy_if(points.begin(), points.end(), std::back_inserter(directResult[i]), [&](const Point & p1)->bool
         {
-            double dist = points[i].distance(p);
-            if (0 < dist && dist <= radius)
-            {
-                directResult[i].push_back(p);
-            }
-        }
-        directPairNum += directResult[i].size();
+            return points[i].inRange(p1, radius);
+        });
     }
     auto t6 = high_resolution_clock::now();
     double directSearchTime = duration_cast<duration<double>>(t6 - t5).count();
@@ -80,7 +72,7 @@ int main(int argNum, char** args)
     cout << "pair sum: " << directPairNum << endl;
     cout << "search time: " << directSearchTime << " seconds" << endl;
 
-    double speedup = directSearchTime / searchTime;
+    double speedup = directSearchTime / (constructionTime + searchTime);
     cout << "speedup: " << speedup << endl;
     return 0;
 }
