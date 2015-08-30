@@ -6,13 +6,17 @@
 #include<cmath>
 #include<cassert>
 #include<algorithm>
+#include<chrono>
 
 using std::vector;
-std::mt19937_64 engine(0);
+using namespace std::chrono;
+std::mt19937_64 engine(std::random_device{}());
 std::uniform_int_distribution<long> distr(0, INT_MAX);
 
-int max_bit(long data[], int n);
-void radix_sort(long data[], int n);
+int  max_bit        (long data[], int n);
+void radix_sort     (long data[], int n);
+void my_radix_sort  (long data[], int n);
+bool sorted         (long data[], int n);
 int main(int arg_num, char** args)
 {
     if (arg_num < 2)
@@ -28,17 +32,21 @@ int main(int arg_num, char** args)
     {
         vec[i] = distr(engine);
     }
-    puts("UNSORTED:");
-    for (int i = 0; i < ele_num; ++i)
-        printf("vec[%d] = %ld\n", i, vec[i]);
-    puts("------------------------");
+    // puts("UNSORTED:");
+    // for (int i = 0; i < ele_num; ++i)
+    //     printf("vec[%d] = %ld\n", i, vec[i]);
+    // puts("------------------------");
 
+    auto t1 = high_resolution_clock::now();
+    my_radix_sort(vec, ele_num);
+    auto t2 = high_resolution_clock::now();
+    // puts("SORTED:");
+    // for (int i = 0; i < ele_num; ++i)
+    //     printf("vec[%d] = %ld\n", i, vec[i]);
 
-    radix_sort(vec, ele_num);
-    puts("SORTED:");
-    for (int i = 0; i < ele_num; ++i)
-        printf("vec[%d] = %ld\n", i, vec[i]);
-
+    double timeSpan = duration_cast<duration<double>>(t2 - t1).count();
+    printf("time spent: %g seconds\n", timeSpan);
+    printf("sorted: %s\n", sorted(vec, ele_num) ? "yes" : "no");
     delete[] vec;
     return EXIT_SUCCESS;
 }
@@ -64,11 +72,10 @@ void radix_sort(long data[], int n)
         {
             counter[j] += counter[j - 1];
         }
-        // assert(counter[9] == d);
 
         for (int j = n - 1; j >= 0; --j)
         {
-            int k = (data[j] / radix) % 10;
+            int k               = (data[j] / radix) % 10;
             tmp[counter[k] - 1] = data[j];
             counter[k]--;
         }
@@ -90,4 +97,38 @@ int max_bit(long data[], int n)
         ++d;
     }
     return d;
+}
+void my_radix_sort(long data[], int n)
+{
+    // my implementation, more readable, less efficient
+    const int d = max_bit(data, n);
+    for (int i = 0; i < d; ++i)
+    {
+        const int radix = pow(10, i);
+        vector<long> tmp;
+        vector<long> bucket[10];
+        tmp.reserve(n);
+        for(int j = 0; j < 10; ++j)
+            bucket[j].reserve(n/10);
+        for (int j = 0; j < n; ++j)
+        {
+            int k = (data[j] / radix) % 10;
+            bucket[k].push_back(data[j]);
+        }
+
+        for (int j = 0; j < 10; ++j)
+        {
+            tmp.insert(tmp.end(), bucket[j].begin(), bucket[j].end());
+        }
+        std::copy(tmp.begin(), tmp.end(), data);
+    }
+}
+bool sorted(long data[], int n)
+{
+    for (int i = 0; i < n - 1; ++i)
+    {
+        if (data[i] > data[i + 1])
+            return false;
+    }
+    return true;
 }
