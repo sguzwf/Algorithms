@@ -8,6 +8,9 @@
 #include<algorithm>
 #include<chrono>
 
+// Author: lvwenlong_lambda@qq.com
+// Last Modified:CST 2015-08-30 16:46:36 星期日
+
 using std::vector;
 using namespace std::chrono;
 std::mt19937_64 engine(std::random_device{}());
