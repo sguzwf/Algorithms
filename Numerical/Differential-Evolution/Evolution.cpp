@@ -31,6 +31,7 @@ DESolver::DESolver( function <double(const vector<double>&)> f
     _candidates.reserve(_init_num);
     for (unsigned int i = 0; i < _init_num; ++i)
     {
+        _candidates.push_back(vector<double>());
         _candidates[i].reserve(_para_num);
         for (const auto& p : _ranges)
         {
