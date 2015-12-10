@@ -1,5 +1,6 @@
 #ifndef __PRIORYT_QUEUE_H__
 #define __PRIORYT_QUEUE_H__
+#include<iostream>
 #include<vector>
 #include<cassert>
 using std::vector;
